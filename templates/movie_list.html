@@ -1,0 +1,15 @@
+<title>{% block title %}Movies Showtimes{% endblock %}</title>
+<table width="800px">
+    <thead>
+    <td>Movies</td><td>Showtimes</td>
+    </thead>
+    <tbody>
+    {% for entry in movies %}
+        <tr>
+            <td>{{ entry['name'] }}</td> <td>{{ entry['times'] }} </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<br>
+<a href="/">back</a>
