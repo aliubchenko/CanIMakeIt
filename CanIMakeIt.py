@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, make_response
 from googlemovieshowtimes import GoogleMovieShowtimes
 
 app = Flask(__name__)
@@ -7,7 +7,8 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
     if request.method == 'GET':
-        return render_template('first_page.html')
+        postal_code = request.cookies.get('postal_code')
+        return render_template('first_page.html', postal_code=postal_code)
     elif request.method == 'POST':
         postal_code = request.form.get('postal_code')
         theater = request.form.get('Theater')
@@ -17,7 +18,9 @@ def hello_world():
             cinemas = theaters.get('theater')
             cinema = cinemas[0]
             movies = cinema.get('movies')
-            return render_template('movie_list.html', movies=movies)
+            ret = make_response(render_template('movie_list.html', movies=movies))
+            ret.set_cookie('postal_code', postal_code)
+            return ret
         else:
             return redirect('/')
 
