@@ -5,7 +5,12 @@
 </head>
 <body>
 <form action="" method="post">
-    <p><input type=text name=postal_code>
+    {% if postal_code %}
+        <p><input type=text name=postal_code value={{postal_code}}>
+    {% else %}
+        <p><input type=text name=postal_code>
+    {% endif %}
+
     <p>
         <select name="Theater">
         <option value="df8f08ae82966d06">Scotia Bank</option>
