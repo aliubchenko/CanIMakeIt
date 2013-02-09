@@ -8,10 +8,10 @@ Showtimes (www.google.com/movies) pages into dictionary objects.
 @version 0.1
 """
 
-import httplib
 import urllib
 import re
 from copy import deepcopy
+from urllib2 import Request, urlopen, URLError
 
 from BeautifulSoup import BeautifulSoup
 
@@ -46,15 +46,20 @@ class GoogleMovieShowtimes:
                 self.params.pop(key)
         params = urllib.urlencode(self.params)
 
-        conn = httplib.HTTPConnection('www.google.com')
-        conn.request("GET", "/movies?" + params, "")
-
-        response = conn.getresponse()
-        self.response_code = response.status
-        self.response = response.getheaders
-        self.response_body = response.read()
-
-        if self.response_code == 200:
+        url = 'http://www.google.com/movies?'
+        req = Request(url, params)
+        try:
+            response = urlopen(req)
+        except URLError as e:
+            if hasattr(e, 'reason'):
+                print 'We failed to reach a server.'
+                print 'Reason: ', e.reason
+            elif hasattr(e, 'code'):
+                print 'The server couldn\'t fulfill the request.'
+                print 'Error code: ', e.code
+        else:
+            # everything is fine
+            self.response_body = response.read()
             self.html = BeautifulSoup(self.response_body)
 
 
@@ -112,6 +117,9 @@ class GoogleMovieShowtimes:
         resp = {'theater': []}
         theaters = self.html.findAll('div', attrs={'class': 'theater'})
         for entry in theaters:
+            if 'closure' in entry.span.attrs[0]:
+                continue
+
             resp['theater'].append({})
 
             index = resp['theater'].index({})
