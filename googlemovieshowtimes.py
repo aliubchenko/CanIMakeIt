@@ -15,7 +15,6 @@ from urllib2 import Request, urlopen, URLError
 
 from BeautifulSoup import BeautifulSoup
 
-
 class GoogleMovieShowtimes:
     """
     Constructor for GoogleMovieShowtimes class.
@@ -31,7 +30,7 @@ class GoogleMovieShowtimes:
 	This class is used for getting response from www.google.com/movies
     """
 
-    def __init__(self, near, mid, tid):
+    def __init__(self, near, mid, tid, logger):
         """
 
         :param near:
@@ -39,6 +38,8 @@ class GoogleMovieShowtimes:
         :param tid:
         """
         self.params = {'near': near, 'mid': mid, 'tid': tid}
+
+        self.log = logger
 
         params = deepcopy(self.params)
         for key, val in params.iteritems():
@@ -144,8 +145,10 @@ class GoogleMovieShowtimes:
                 times = div_movie.find('div', {'class': 'times'})
                 times = times.findAll('span')
                 for div_time in times:
+                    self.log.info(div_time)
                     if len(div_time.contents) == 3:
                         time_val = div_time.contents[2]
+                        print time_val
                         # time_val = re.search('(.*)&#', time_val)
                         if time_val:
                             time_val = re.search(r'(\d+:\d+)', time_val).group(1)

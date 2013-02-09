@@ -13,7 +13,7 @@ def hello_world():
         postal_code = request.form.get('postal_code')
         theater = request.form.get('Theater')
         if postal_code and theater:
-            movie = GoogleMovieShowtimes(postal_code, '', theater)
+            movie = GoogleMovieShowtimes(postal_code, '', theater, app.logger)
             theaters = movie.parse()
             cinemas = theaters.get('theater')
             cinema = cinemas[0]
