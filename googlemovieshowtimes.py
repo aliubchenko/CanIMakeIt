@@ -146,8 +146,8 @@ class GoogleMovieShowtimes:
                 for div_time in times:
                     if len(div_time.contents) == 3:
                         time_val = div_time.contents[2]
-                        time_val = re.search('(.*)&#', time_val)
-
+                        # time_val = re.search('(.*)&#', time_val)
+                        time_val = re.search(r'(\d+:\d+)', time_val)
                         resp['theater'][index]['movies'][index_m]['times'].append(time_val.group(1))
 
         return resp
